@@ -1,268 +1,256 @@
 #include <iostream>
-#include <algorithm>
 using namespace std;
 
 class DynamicArray {
-protected:
-    int *data;
+private:
+    int *arr;
     int size;
 
 public:
-    // Конструктор
-    DynamicArray(int arrSize) {
-        if (arrSize < 0) {
+    // конструктор
+    DynamicArray(int n) {
+        if (n < 0) {
             cout << "Ошибка: размер не может быть отрицательным" << endl;
             size = 0;
-            data = nullptr;
+            arr = nullptr;
             return;
         }
-        size = arrSize;
-        data = new int[size];
+        size = n;
+        arr = new int[size];
         for (int i = 0; i < size; i++) {
-            data[i] = 0; // Инициализируем нулями вместо случайных значений
+            arr[i] = 0;
         }
     }
 
-    // Конструктор копирования
+    // конструктор копирования
     DynamicArray(const DynamicArray& other) {
         size = other.size;
-        data = new int[size];
+        arr = new int[size];
         for (int i = 0; i < size; i++) {
-            data[i] = other.data[i];
+            arr[i] = other.arr[i];
         }
     }
 
-    // Деструктор
+    // деструктор
     ~DynamicArray() {
-        delete[] data;
+        delete[] arr;
     }
 
-    // Сеттер
-    void setValue(int index, int value) {
+    // сеттер
+    void set(int index, int val) {
         if (0 <= index && index < size) {
-            if (-100 <= value && value <= 100) {
-                data[index] = value;
+            if (-100 <= val && val <= 100) {
+                arr[index] = val;
             } else {
-                cout << "Ошибка: значение " << value << " выходит за пределы [-100, 100]" << endl;
+                cout << "Ошибка: значение " << val << " выходит за пределы [-100, 100]" << endl;
             }
         } else {
             cout << "Ошибка: индекс " << index << " выходит за границы массива" << endl;
         }
     }
 
-    // Геттер
-    int getValue(int index) {
+    // геттер
+    int get(int index) const {
         if (0 <= index && index < size) {
-            return data[index];
+            return arr[index];
         } else {
             cout << "Ошибка: индекс " << index << " выходит за границы массива" << endl;
             return 0;
         }
     }
 
-    // Функция вывода
+    // функция вывода
     void print() {
         for (int i = 0; i < size; i++) {
-            cout << data[i] << " ";
+            cout << arr[i] << " ";
         }
         cout << endl;
     }
 
-    // Добавление значения в конец
-    void addValue(int value) {
-        if (-100 <= value && value <= 100) {
-            int* newData = new int[size + 1];
+    // значения добавляются в конец
+    void add(int val) {
+        if (-100 <= val && val <= 100) {
+            int* newArr = new int[size + 1];
             
             for (int i = 0; i < size; i++) {
-                newData[i] = data[i];
+                newArr[i] = arr[i];
             }
             
-            newData[size] = value;
+            newArr[size] = val;
             
-            delete[] data;
-            data = newData;
+            delete[] arr;
+            arr = newArr;
             size += 1;
         } else {
-            cout << "Ошибка: значение " << value << " выходит за пределы [-100, 100]" << endl;
+            cout << "Ошибка: значение " << val << " выходит за пределы [-100, 100]" << endl;
         }
     }
 
-    // Операция сложения массивов
-    DynamicArray add(const DynamicArray& other) {
+    // сложение массивов
+    DynamicArray operator+(const DynamicArray& other) {
         int maxSize = (size > other.size) ? size : other.size;
         DynamicArray result(maxSize);
         
         for (int i = 0; i < maxSize; i++) {
-            int val1 = (i < size) ? data[i] : 0;
-            int val2 = (i < other.size) ? other.data[i] : 0;
-            result.data[i] = val1 + val2;
+            int val1 = (i < size) ? arr[i] : 0;
+            int val2 = (i < other.size) ? other.arr[i] : 0;
+            result.arr[i] = val1 + val2;
         }
         
         return result;
     }
 
-    // Операция вычитания массивов
-    DynamicArray subtract(const DynamicArray& other) {
+    // вычитание массивов
+    DynamicArray operator-(const DynamicArray& other) {
         int maxSize = (size > other.size) ? size : other.size;
         DynamicArray result(maxSize);
         
         for (int i = 0; i < maxSize; i++) {
-            int val1 = (i < size) ? data[i] : 0;
-            int val2 = (i < other.size) ? other.data[i] : 0;
-            result.data[i] = val1 - val2;
+            int val1 = (i < size) ? arr[i] : 0;
+            int val2 = (i < other.size) ? other.arr[i] : 0;
+            result.arr[i] = val1 - val2;
         }
         
         return result;
     }
 
-    // Геттер для размера
+    // геттер для размера
     int getSize() const {
         return size;
     }
 };
 
-
-class Func : public DynamicArray {
+class Func {
 public:
-    using DynamicArray::DynamicArray;
-    
-    void printFunc() {
+    static void showMsg() {
         cout << "Выполняется вычисление медианного значения" << endl;
     }
 
-    void printMedian() {
-        printFunc();
-        Func tmp(*this);
-        sort(tmp.data, tmp.data + size);
-        if (size == 0) {
-            cout << "Массив пуст" << endl;
-        }
-        double mediana;
-        if (size % 2 == 0) {
-            mediana = (data[size / 2 - 1] + data[size / 2]) / 2.0;
-        } else {
-            mediana = data[size / 2];
-        }
-        cout << "Медианное число: " << mediana << endl;
-    }
-
-    void printAverage() {
-        if (size == 0) {
-            cout << "Массив пуст" << endl;
-        }
-        double average = 0.0;
-        for (int i = 0; i < size; i++) { 
-            average += data[i];
-        }
-        cout << "Среднее значение равно: " << average / size << endl;
-    }
-
-    int minValue() {
-        if (size == 0) {
+    static void med(const DynamicArray& arr) {
+        showMsg();
+        int n = arr.getSize();
+        if (n == 0) {
             cout << "Массив пуст" << endl;
             return;
         }
-        int min_value = data[0];
-        for (int i = 1; i < size; i++) {
-            if (min_value > data[i]) {
-                min_value = data[i];
-            }
+        
+        double m;
+        if (n % 2 == 0) {
+            m = (arr.get(n / 2 - 1) + arr.get(n / 2)) / 2.0;
+        } else {
+            m = arr.get(n / 2);
         }
-        cout << "Минимальное значение равно " << min_value << endl;
-
-        return min_value;
+        cout << "Медианное число: " << m << endl;
     }
 
-    int maxValue() {
-        if (size == 0) {
+    static void avg(const DynamicArray& arr) {
+        int n = arr.getSize();
+        if (n == 0) {
             cout << "Массив пуст" << endl;
-            return 0;
+            return;
         }
-        int max_value = data[0];
-        for (int i = 1; i < size; i++) {
-            if (max_value < data[i]) {
-                max_value = data[i];
+        double s = 0.0;
+        for (int i = 0; i < n; i++) { 
+            s += arr.get(i);
+        }
+        cout << "Среднее значение равно: " << s / n << endl;
+    }
+
+    static void findMin(const DynamicArray& arr) {
+        int n = arr.getSize();
+        if (n == 0) {
+            cout << "Массив пуст" << endl;
+            return;
+        }
+        int mn = arr.get(0);
+        for (int i = 1; i < n; i++) {
+            if (mn > arr.get(i)) {
+                mn = arr.get(i);
             }
         }
-        cout << "Максимальное значение равно " << max_value << endl;
+        cout << "Минимальное значение равно " << mn << endl;
+    }
 
-        return max_value;
+    static void findMax(const DynamicArray& arr) {
+        int n = arr.getSize();
+        if (n == 0) {
+            cout << "Массив пуст" << endl;
+            return;
+        }
+        int mx = arr.get(0);
+        for (int i = 1; i < n; i++) {
+            if (mx < arr.get(i)) {
+                mx = arr.get(i);
+            }
+        }
+        cout << "Максимальное значение равно " << mx << endl;
     }
 };
 
 int main() {
-    // Тестирование класса
+    
+    
     cout << "Создание массива A размером 3:" << endl;
-    DynamicArray arrA(3);
-    arrA.setValue(0, 10);
-    arrA.setValue(1, 20);
-    arrA.setValue(2, 30);
+    DynamicArray a(3);
+    a.set(0, 10);
+    a.set(1, 20);
+    a.set(2, 30);
     cout << "Массив A: ";
-    arrA.print();
+    a.print();
 
     cout << "\nСоздание массива B размером 5:" << endl;
-    DynamicArray arrB(5);
-    arrB.setValue(0, 5);
-    arrB.setValue(1, 15);
-    arrB.setValue(2, 25);
-    arrB.setValue(3, 35);
-    arrB.setValue(4, 45);
+    DynamicArray b(5);
+    b.set(0, 5);
+    b.set(1, 15);
+    b.set(2, 25);
+    b.set(3, 35);
+    b.set(4, 45);
     cout << "Массив B: ";
-    arrB.print();
+    b.print();
 
     cout << "\nТестирование конструктора копирования:" << endl;
-    DynamicArray arrC = arrA;
+    DynamicArray c = a;
     cout << "Массив C (копия A): ";
-    arrC.print();
+    c.print();
 
     cout << "\nДобавление значения 40 в массив A:" << endl;
-    arrA.addValue(40);
+    a.add(40);
     cout << "Массив A после добавления: ";
-    arrA.print();
+    a.print();
 
     cout << "\nСложение массивов A и B:" << endl;
-    DynamicArray sum = arrA.add(arrB);
+    DynamicArray sum = a + b;
     cout << "A + B: ";
     sum.print();
 
     cout << "\nВычитание массивов A и B:" << endl;
-    DynamicArray diff = arrA.subtract(arrB);
+    DynamicArray diff = a - b;
     cout << "A - B: ";
     diff.print();
 
     cout << "\nТестирование обработки ошибок:" << endl;
-    arrA.setValue(10, 50); // Неверный индекс
-    arrA.setValue(0, 150); // Неверное значение
+    a.set(10, 50);
+    a.set(0, 150);
 
     cout << "\n=== АНАЛИЗ МАССИВОВ ===" << endl;
     
     cout << "\nАнализ массива A:" << endl;
+    Func::med(a);
+    Func::avg(a);
+    Func::findMin(a);
+    Func::findMax(a);
     
-    Func func1(3);
-    func1.setValue(0, 10);
-    func1.setValue(1, 20);
-    func1.setValue(2, 30);
+    cout << "\nАнализ массива B:" << endl;
+    Func::med(b);
+    Func::avg(b);
+    Func::findMin(b);
+    Func::findMax(b);
     
-    cout << "Func1 массив: ";
-    func1.print();
-    func1.printMedian();
-    func1.printAverage();
-    func1.minValue();
-    func1.maxValue();
-    
-    Func func2(5);
-    func2.setValue(0, 5);
-    func2.setValue(1, 15);
-    func2.setValue(2, 25);
-    func2.setValue(3, 35);
-    func2.setValue(4, 45);
-    
-    cout << "\nFunc2 массив: ";
-    func2.print();
-    func2.printMedian();
-    func2.printAverage();
-    func2.minValue();
-    func2.maxValue();
+    cout << "\nАнализ массива C:" << endl;
+    Func::med(c);
+    Func::avg(c);
+    Func::findMin(c);
+    Func::findMax(c);
 
     return 0;
 }
