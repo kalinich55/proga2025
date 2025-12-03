@@ -7,7 +7,7 @@ private:
     int size;
 
 public:
-    // конструктор
+    // Конструктор
     DynamicArray(int n) {
         if (n < 0) {
             cout << "Ошибка: размер не может быть отрицательным" << endl;
@@ -22,7 +22,7 @@ public:
         }
     }
 
-    // конструктор копирования
+    // Конструктор копирования
     DynamicArray(const DynamicArray& other) {
         size = other.size;
         arr = new int[size];
@@ -31,12 +31,12 @@ public:
         }
     }
 
-    // деструктор
+    // Деструктор
     ~DynamicArray() {
         delete[] arr;
     }
 
-    // сеттер
+    // Сеттер
     void set(int index, int val) {
         if (0 <= index && index < size) {
             if (-100 <= val && val <= 100) {
@@ -49,7 +49,7 @@ public:
         }
     }
 
-    // геттер
+    // Геттер
     int get(int index) const {
         if (0 <= index && index < size) {
             return arr[index];
@@ -59,7 +59,7 @@ public:
         }
     }
 
-    // функция вывода
+    // Функция вывода
     void print() {
         for (int i = 0; i < size; i++) {
             cout << arr[i] << " ";
@@ -67,7 +67,7 @@ public:
         cout << endl;
     }
 
-    // значения добавляются в конец
+    // Добавление значения в конец
     void add(int val) {
         if (-100 <= val && val <= 100) {
             int* newArr = new int[size + 1];
@@ -86,7 +86,7 @@ public:
         }
     }
 
-    // сложение массивов
+    // Сложение массивов
     DynamicArray operator+(const DynamicArray& other) {
         int maxSize = (size > other.size) ? size : other.size;
         DynamicArray result(maxSize);
@@ -100,7 +100,7 @@ public:
         return result;
     }
 
-    // вычитание массивов
+    // Вычитание массивов
     DynamicArray operator-(const DynamicArray& other) {
         int maxSize = (size > other.size) ? size : other.size;
         DynamicArray result(maxSize);
@@ -114,7 +114,7 @@ public:
         return result;
     }
 
-    // геттер для размера
+    // Геттер для размера
     int getSize() const {
         return size;
     }
